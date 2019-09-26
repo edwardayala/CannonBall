@@ -1,4 +1,5 @@
 import com.jogamp.opengl.*;
+import com.jogamp.opengl.util.gl2.GLUT;
 
 public class Target {
     // Properties / Attributes
@@ -59,10 +60,12 @@ public class Target {
     }
     void draw(GLAutoDrawable drawable){
         final GL2 gl = drawable.getGL().getGL2();
+        GLUT glut = new GLUT();
+
         gl.glColor3d(color.getX(),color.getY(),color.getZ());
         gl.glPushMatrix();
         gl.glTranslated(center.m_v[0],center.m_v[1],center.m_v[2]);
-//        gl.glutSolidTorus()
+        glut.glutSolidTorus(innerRadius, outerRadius, 20, 20);
         gl.glPopMatrix();
     }
     void setBbx(double [] _bbx){
