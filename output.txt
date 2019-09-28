@@ -1,0 +1,45 @@
+Vector v1(x,y,z): 5.0 | 3.0 | 1.5
+Vector v2(x,y,z): 7.0 | 3.4 | 1.2
+Vector v3(x,y,z): 6.0 | 4.5 | 3.2
+
+Addition results 1: 12.0 | 6.4 | 2.7
+Addition results 2: 13.0 | 7.9 | 4.4
+Addition results 3: 11.0 | 7.5 | 4.7
+
+Subtraction results 1: -2.0 | -0.3999999999999999 | 0.30000000000000004
+Subtraction results 2: 1.0 | -1.1 | -2.0
+Subtraction results 3: 1.0 | 1.5 | 1.7000000000000002
+
+Multiplication results 1: 21.5 | 12.899999999999999 | 6.449999999999999
+Multiplication results 2: 16.099999999999998 | 7.819999999999999 | 2.76
+Multiplication results 3: 4.800000000000001 | 3.6 | 2.5600000000000005
+
+Division Result 1: 1.1627906976744187 | 0.6976744186046512 | 0.3488372093023256
+Division Result 2: 3.0434782608695654 | 1.4782608695652175 | 0.5217391304347826
+Division Result 3: 7.5 | 5.625 | 4.0
+
+Component * result 1: 35.0 | 10.2 | 1.7999999999999998
+Component * result 2: 42.0 | 15.299999999999999 | 3.84
+Component * result 3: 30.0 | 13.5 | 4.800000000000001
+
+Negate Vector 1: -5.0 | -3.0 | -1.5
+Negate Vector 2: -7.0 | -3.4 | -1.2
+Negate Vector 3: -6.0 | -4.5 | -3.2
+
+Dot-Product result 1: 47.0
+Dot-Product result 2: 61.14
+Dot-Product result 3: 48.3
+
+Cross-Product result 1: 5.0 | 3.0 | 0.30000000000000004
+Cross-Product result 2: 1.0 | 3.4 | 1.2
+Cross-Product result 3: 1.0 | 1.5 | 0.19999999999999973
+
+Self Multiplication 1: 25.0 | 9.0 | 0.09000000000000002
+Self Multiplication 2: 1.0 | 11.559999999999999 | 1.44
+Self Multiplication 3: 1.0 | 2.25 | 0.0399999999999999
+
+Self Division 1: 5.813953488372094 | 2.0930232558139537 | 0.02093023255813954
+Self Division 2: 0.4347826086956522 | 5.0260869565217385 | 0.6260869565217392
+Self Division 3: 1.25 | 2.8125 | 0.04999999999999987
+
+Process finished with exit code 0
