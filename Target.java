@@ -21,7 +21,7 @@ public class Target {
     }
 
     // Methods
-    void update(Node [] ballList){
+    void update(Ball ballList){
         if (isMoving){
             center.setX(center.getX() + deltaX);
             if (center.getX() < bbx[0]){
@@ -36,7 +36,7 @@ public class Target {
 
         boolean hit = false;
         boolean isLast = false;
-        Node [] curBall = ballList;
+        Ball curBall = ballList;
         while (curBall != null){
             Ball b = new Node().ball;
             Vector3d ballCenter = b.getCenter();

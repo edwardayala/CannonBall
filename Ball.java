@@ -6,6 +6,8 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.gl2.GLUT;
 
+import java.util.LinkedList;
+
 
 public class Ball {
     // Properties/Attributes
@@ -19,6 +21,8 @@ public class Ball {
 
     double damping = 0.95;
     double collisionDamping = 0.3;
+
+    LinkedList<Ball> Node;
 
     Ball(){}
 

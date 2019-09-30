@@ -1,3 +1,5 @@
+// Edward Ayala, Melissa Rivera, Veronika Lysenko
+
 class Vector3d {
 
     double [] m_v = new double[3];

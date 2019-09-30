@@ -6,6 +6,8 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 import java.awt.*;
 import java.nio.FloatBuffer;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 import static com.jogamp.opengl.GL.*;
 import static com.jogamp.opengl.GL2ES3.GL_QUADS;
@@ -26,6 +28,7 @@ public class ballGame {
 
     // create a linked-list
     // ... no
+    LinkedList<Ball> Node = new LinkedList<>();
 
     // A singular ball
     Ball ball = new Ball();
@@ -182,11 +185,19 @@ public class ballGame {
         cZ = cannon.getZ()+ (cannonL * Basic.cosd(ang2));
     }
 
-    void drawAllBalls(){
-        Node tmp = new Node(); // Node* tmp = head;
-        while(tmp != null){
+    void drawAllBalls(GLAutoDrawable drawable){
+//        Node tmp = new Node(); // Node* tmp = head;
+//        while(tmp != null){
 //            tmp.ball.draw();
 //            tmp = tmp.next;
+
+
+        Node tmp = new Node();
+        int i = 0;
+
+        while (tmp != null){
+            tmp.ball.draw(drawable);
+            tmp.ball = tmp.Node.get(i+1);
         }
     }
 
@@ -196,6 +207,15 @@ public class ballGame {
 //            tmp->ball.Update(dt);
 //            tmp = tmp->next;
 //        }
+
+        Node tmp = new Node();
+        tmp.ball = tmp.Node.get(0);
+        int i = 0;
+
+        while (tmp != null){
+            tmp.ball.update(dt);
+            tmp.ball = tmp.Node.get(i+1);
+        }
     }
 
     void addBall(double _r, Vector3d stPt, Vector3d vel, Vector3d accelVec){
@@ -213,33 +233,35 @@ public class ballGame {
         int numRemoved = 0;
         int numBallsRemaining = 0;
         int counter = 0;
-//        while (location != null){
-//            if (location.next == null)
-//                isLast = true;
-//            if (location.ball.isMoving()){
-//                predLoc = location;
-//                location = location.next;
-//                numBallsRemaining++;
-//            }
-//            else {
-//                System.out.println("counter = " + counter);
-//                numRemoved++;
-//                Node temp = location;
-//                location = location.next;
-//                if (predLoc != null)
-//                    predLoc.next = location;
-//                else
-//                    head = location;
-//                delete temp;
-//            }
-//            counter++;
-//        }
+        int i = 0;
+        while (location != null){
+            if (location.Node.get(i+1) == null)
+                isLast = true;
+            if (location.ball.isMoving()){
+                predLoc = location;
+                location.ball = location.Node.get(i+1);
+                numBallsRemaining++;
+            }
+            else {
+                System.out.println("counter = " + counter);
+                numRemoved++;
+                Node temp = location;
+                location.ball = location.Node.get(i+1);
+                if (predLoc != null)
+                    predLoc.Node.set(i+1, location);
+                else
+                    location.Node.set(0, location);
+                temp.Node.clear();  // delete temp;
+            }
+            counter++;
+        }
         System.out.println("numBallsRemaining: " + numBallsRemaining + " numBallsRemoved: " + numRemoved);
     }
 
     void renderScene(GLAutoDrawable drawable){
         final GL2 gl = drawable.getGL().getGL2();
         final GLU glu = new GLU();
+        final GLUT glut = new GLUT();
 
         gl.glEnable(GL_DEPTH_TEST);
 
@@ -261,7 +283,7 @@ public class ballGame {
         gl.glEnable(GL_COLOR_MATERIAL);
 
         // draw bbx
-//        drawBBX();
+        drawBBX(drawable);
 
         // draw yPlane
         gl.glLineWidth(2);
@@ -271,8 +293,8 @@ public class ballGame {
         gl.glEnd();
 
         // draw the ball(s)
-        drawAllBalls();
-//        target.draw();
+        drawAllBalls(drawable);
+        target.draw(drawable);
 
         // draw the cannon
         double cX = 0.0, cY = 0.0, cZ = 0.0;
@@ -285,7 +307,7 @@ public class ballGame {
         gl.glEnd();
 
         updateAllBalls();
-//        target.update(head);
+        target.update(Node.getFirst());
 
 //        glutSwapBuffers();
     }
@@ -327,8 +349,13 @@ public class ballGame {
         }
     }
 
-    void processSpecialKeys(int key, int x, int y){
+    void processSpecialKeys(int key, int x, int y, GLAutoDrawable drawable){
         GLUT glut = new GLUT();
+        final GL2 gl = drawable.getGL().getGL2();
+
+        GLU glu = new GLU();
+
+
 
 //
 //        switch(key) {
