@@ -1,12 +1,16 @@
+import com.jogamp.nativewindow.CapabilitiesImmutable;
 import com.jogamp.opengl.*;
+import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.fixedfunc.GLLightingFunc;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 
+import javax.swing.*;
 import java.awt.*;
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 import static com.jogamp.opengl.GL.*;
@@ -14,8 +18,7 @@ import static com.jogamp.opengl.GL2ES3.GL_QUADS;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.*;
 
 
-public class ballGame {
-
+public class ballGame implements GLEventListener {
     // all variables initialized to 1.0, meaning
     // the triangle will initially be white
     float red=1.0f, blue=1.0f, green=1.0f;
@@ -31,13 +34,13 @@ public class ballGame {
     LinkedList<Ball> Node = new LinkedList<>();
 
     // A singular ball
-    Ball ball = new Ball();
+    Ball ball;
 
     // a singular target
-    Target target = new Target();
+    Target target;
 
     // cannon position
-    Vector3d cannon = new Vector3d();
+    Vector3d cannon;
 
     // ball radius
     double curRadius = 0.6;
@@ -58,8 +61,14 @@ public class ballGame {
 
     double [] bbx = new double[]{-20,20,-4,20,-100,100};
 
+    public ballGame() {
+//        target = new Target();
+        ball = new Ball();
+        cannon = new Vector3d();
+    }
 
-    void init(GLAutoDrawable drawable){
+
+    public void init(GLAutoDrawable drawable){
         final GL2 gl = drawable.getGL().getGL2();
 
         // GLFloat == float [] - https://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/
@@ -84,6 +93,11 @@ public class ballGame {
         gl.glEnable(GL_LIGHTING);
         gl.glEnable(GL_LIGHT0);
         gl.glEnable(GL_DEPTH_TEST);
+    }
+
+    @Override
+    public void dispose(GLAutoDrawable glAutoDrawable) {
+
     }
 
     void changeSize(int w, int h, GLAutoDrawable drawable){
@@ -355,8 +369,6 @@ public class ballGame {
 
         GLU glu = new GLU();
 
-
-
 //
 //        switch(key) {
 //            case GLUT_KEY_UP :
@@ -377,15 +389,33 @@ public class ballGame {
 //        }
     }
 
-    public void main(int argc, char [][] argv, GLAutoDrawable drawable){
+    public void display(GLAutoDrawable drawable){
         final GL2 gl = drawable.getGL().getGL2();
-        GLUT glut = new GLUT();
-        Frame frame = new Frame("ShootPts");
 
+        gl.glBegin(GL_LINES);
 
-        cannon.setAll(0 ,yPlane, 0);
-        target.setBbx(bbx);
+    }
 
+    @Override
+    public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
 
+    }
+
+    public static void main(String[] args){
+        // getting the capabilities object of GL2 profile
+        final GLProfile profile = GLProfile.get(GLProfile.GL2);
+        GLCapabilities capabilities = new GLCapabilities(profile);
+        // canvas
+        final GLCanvas glCanvas = new GLCanvas(capabilities);
+        ballGame b = new ballGame();
+        glCanvas.addGLEventListener(b);
+        glCanvas.setSize(400, 400);
+        // frame
+        final JFrame frame = new JFrame("ShootPts");
+        // adding canvas to frame
+        frame.getContentPane().add(glCanvas);
+
+        frame.setSize(frame.getContentPane().getPreferredSize());
+        frame.setVisible(true);
     }
 }
