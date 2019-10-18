@@ -1,4 +1,3 @@
-import com.jogamp.nativewindow.CapabilitiesImmutable;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.fixedfunc.GLLightingFunc;
@@ -7,11 +6,8 @@ import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 import javax.swing.*;
-import java.awt.*;
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 
 import static com.jogamp.opengl.GL.*;
 import static com.jogamp.opengl.GL2ES3.GL_QUADS;
@@ -67,6 +63,12 @@ public class ballGame implements GLEventListener {
         cannon = new Vector3d();
     }
 
+    protected static final int GLUT_KEY_LEFT = 0;
+    protected static final int GLUT_KEY_UP = 1;
+    protected static final int GLUT_KEY_RIGHT = 2;
+    protected static final int GLUT_KEY_DOWN = 3;
+    protected static final int GLUT_KEY_PAGE_UP = 4;
+    protected static final int GLUT_KEY_PAGE_DOWN = 5;
 
     public void init(GLAutoDrawable drawable){
         final GL2 gl = drawable.getGL().getGL2();
@@ -275,7 +277,7 @@ public class ballGame implements GLEventListener {
     void renderScene(GLAutoDrawable drawable){
         final GL2 gl = drawable.getGL().getGL2();
         final GLU glu = new GLU();
-        final GLUT glut = new GLUT();
+//        final GLUT glut = new GLUT();
 
         gl.glEnable(GL_DEPTH_TEST);
 
@@ -306,9 +308,9 @@ public class ballGame implements GLEventListener {
         gl.glVertex3f(4.0f,yPlane,0.0f);
         gl.glEnd();
 
-        // draw the ball(s)
-        drawAllBalls(drawable);
-        target.draw(drawable);
+//        draw the ball(s)
+//        drawAllBalls(drawable);
+//        target.draw(drawable);
 
         // draw the cannon
         double cX = 0.0, cY = 0.0, cZ = 0.0;
@@ -320,8 +322,8 @@ public class ballGame implements GLEventListener {
         gl.glVertex3d(cX, cY, cZ);
         gl.glEnd();
 
-        updateAllBalls();
-        target.update(Node.getFirst());
+//        updateAllBalls();
+//        target.update(Node.getFirst());
 
 //        glutSwapBuffers();
     }
@@ -364,36 +366,32 @@ public class ballGame implements GLEventListener {
     }
 
     void processSpecialKeys(int key, int x, int y, GLAutoDrawable drawable){
-        GLUT glut = new GLUT();
-        final GL2 gl = drawable.getGL().getGL2();
-
-        GLU glu = new GLU();
-
-//
-//        switch(key) {
-//            case GLUT_KEY_UP :
-//                angle1 += 1;
-//                if(angle1>=100) angle1 = 100;
-//                break;
-//            case GLUT_KEY_DOWN :
-//                angle1 -= 1;
-//                if(angle1<=0) angle1 = 0;
-//                break;
-//            case GLUT_KEY_LEFT :
-//                angle2 += 1;
-//                if(angle2>=270) angle2 = 270;
-//                break;
-//            case GLUT_KEY_RIGHT :
-//                angle2 -= 1;
-//                if(angle2<=90) angle2 = 90;
-//        }
+        switch(key) {
+            case GLUT_KEY_UP :
+                angle1 += 1;
+                if(angle1>=100) angle1 = 100;
+                break;
+            case GLUT_KEY_DOWN :
+                angle1 -= 1;
+                if(angle1<=0) angle1 = 0;
+                break;
+            case GLUT_KEY_LEFT :
+                angle2 += 1;
+                if(angle2>=270) angle2 = 270;
+                break;
+            case GLUT_KEY_RIGHT :
+                angle2 -= 1;
+                if(angle2<=90) angle2 = 90;
+        }
     }
 
     public void display(GLAutoDrawable drawable){
-        final GL2 gl = drawable.getGL().getGL2();
+//     final GL2 gl = drawable.getGL().getGL2();
 
-        gl.glBegin(GL_LINES);
+//      gl.glBegin(GL_LINES);
+//      renderScene(drawable);
 
+        drawBBX(drawable);
     }
 
     @Override
@@ -402,6 +400,7 @@ public class ballGame implements GLEventListener {
     }
 
     public static void main(String[] args){
+        GLAutoDrawable drawable = null;
         // getting the capabilities object of GL2 profile
         final GLProfile profile = GLProfile.get(GLProfile.GL2);
         GLCapabilities capabilities = new GLCapabilities(profile);
@@ -412,10 +411,13 @@ public class ballGame implements GLEventListener {
         glCanvas.setSize(400, 400);
         // frame
         final JFrame frame = new JFrame("ShootPts");
+
+//        init(drawable);
         // adding canvas to frame
         frame.getContentPane().add(glCanvas);
 
         frame.setSize(frame.getContentPane().getPreferredSize());
         frame.setVisible(true);
+
     }
 }
