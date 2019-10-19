@@ -169,12 +169,12 @@ public class ballGame implements GLEventListener {
         gl.glNormal3d(0,-1,0);
         gl.glColor3d(1,1,1);
         gl.glBegin(GL2.GL_POLYGON);
-        gl.glVertex3d(-1,-0.75,-0.1);
-        gl.glVertex3d(1,-0.75,-0.1);
-        gl.glVertex3d(2.3,-0.95,-0.1);
-        gl.glVertex3d(2.3,-2.3,-0.1);
-        gl.glVertex3d(-2.3,-2.3,-0.1);
-        gl.glVertex3d(-2.3,-0.95,-0.1);
+        gl.glVertex3d(-1,-0.75,-0.1);   // VECTOR 1
+        gl.glVertex3d(1,-0.75,-0.1);    // VECTOR 2
+        gl.glVertex3d(2.3,-0.95,-0.1);  // VECTOR 3
+        gl.glVertex3d(2.3,-2.3,-0.1);   // VECTOR 4
+        gl.glVertex3d(-2.3,-2.3,-0.1);  // VECTOR 5
+        gl.glVertex3d(-2.3,-0.95,-0.1); // VECTOR 6
         gl.glEnd();
     }
 
