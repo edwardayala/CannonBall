@@ -1,16 +1,18 @@
-import com.jogamp.opengl.*;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.fixedfunc.GLLightingFunc;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 import javax.swing.*;
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
 
 import static com.jogamp.opengl.GL.*;
-import static com.jogamp.opengl.GL2ES3.GL_QUADS;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.*;
 
 
@@ -67,8 +69,6 @@ public class ballGame implements GLEventListener {
     protected static final int GLUT_KEY_UP = 1;
     protected static final int GLUT_KEY_RIGHT = 2;
     protected static final int GLUT_KEY_DOWN = 3;
-    protected static final int GLUT_KEY_PAGE_UP = 4;
-    protected static final int GLUT_KEY_PAGE_DOWN = 5;
 
     public void init(GLAutoDrawable drawable){
         final GL2 gl = drawable.getGL().getGL2();
@@ -135,7 +135,7 @@ public class ballGame implements GLEventListener {
         gl.glShadeModel(GL_SMOOTH);
         gl.glNormal3d(1,0,0);
         gl.glColor3f(1,0,0);
-        gl.glBegin(GL_QUADS); // left side
+        gl.glBegin(GL2.GL_QUADS); //front side
         gl.glVertex3d(bbx[0],bbx[2],bbx[4]);
         gl.glVertex3d(bbx[0],bbx[3],bbx[4]);
         gl.glVertex3d(bbx[0],bbx[3],bbx[5]);
@@ -144,7 +144,7 @@ public class ballGame implements GLEventListener {
 
         gl.glNormal3d(-1,0,0);
         gl.glColor3f(0,0,1);
-        gl.glBegin(GL_QUADS); //right side
+        gl.glBegin(GL2.GL_QUADS); //front side
         gl.glVertex3d(bbx[1],bbx[2],bbx[4]);
         gl.glVertex3d(bbx[1],bbx[3],bbx[4]);
         gl.glVertex3d(bbx[1],bbx[3],bbx[5]);
@@ -153,7 +153,7 @@ public class ballGame implements GLEventListener {
 
         gl.glNormal3d(0,1,0);
         gl.glColor3f(0.8f,0.8f,0.8f);
-        gl.glBegin(GL_QUADS); //bottom side
+        gl.glBegin(GL2.GL_QUADS); //front side
         gl.glVertex3d(bbx[0],bbx[2],bbx[4]);
         gl.glVertex3d(bbx[0],bbx[2],bbx[5]);
         gl.glVertex3d(bbx[1],bbx[2],bbx[5]);
@@ -162,7 +162,7 @@ public class ballGame implements GLEventListener {
 
         gl.glNormal3d(0,-1,0);
         gl.glColor3f(0.0f,0.8f,0.2f);
-        gl.glBegin(GL_QUADS); //top side
+        gl.glBegin(GL2.GL_QUADS); //front side
         gl.glVertex3d(bbx[0],bbx[3],bbx[4]);
         gl.glVertex3d(bbx[0],bbx[3],bbx[5]);
         gl.glVertex3d(bbx[1],bbx[3],bbx[5]);
@@ -172,7 +172,7 @@ public class ballGame implements GLEventListener {
         //back
         gl.glNormal3d(0,0,-1);
         gl.glColor3f(0.0f,0.8f,0.8f);
-        gl.glBegin(GL_QUADS); //back side
+        gl.glBegin(GL2.GL_QUADS); //front side
         gl.glVertex3d(bbx[0],bbx[2],bbx[4]);
         gl.glVertex3d(bbx[0],bbx[3],bbx[4]);
         gl.glVertex3d(bbx[1],bbx[3],bbx[4]);
@@ -181,7 +181,7 @@ public class ballGame implements GLEventListener {
         //front
         gl.glNormal3d(0,0,1);
         gl.glColor3f(0.0f,0.8f,0.8f);
-        gl.glBegin(GL_QUADS); //front side
+        gl.glBegin(GL2.GL_QUADS); //front side
         gl.glVertex3d(bbx[0],bbx[2],bbx[5]);
         gl.glVertex3d(bbx[0],bbx[3],bbx[5]);
         gl.glVertex3d(bbx[1],bbx[3],bbx[5]);
@@ -386,33 +386,60 @@ public class ballGame implements GLEventListener {
     }
 
     public void display(GLAutoDrawable drawable){
-//     final GL2 gl = drawable.getGL().getGL2();
+        final GL2 gl = drawable.getGL().getGL2();
+        gl.glTranslatef(0f, 0f, -2.5f);
 
-//      gl.glBegin(GL_LINES);
-//      renderScene(drawable);
+        // enable lighting
+        gl.glEnable(GL_LIGHTING);
+        gl.glEnable(GL_LIGHT0);
+        gl.glEnable(GL_COLOR_MATERIAL);
 
-        drawBBX(drawable);
+        // RIGHT WALL
+        gl.glNormal3d(0,-1,0);
+        gl.glColor3d(1.0,0.0,0.0);
+        gl.glBegin(GL2.GL_QUADS); //front side
+        gl.glVertex3d(2.15,2.15,0);     // TOP RIGHT
+        gl.glVertex3d(1,0.75,0);        // TOP LEFT
+        gl.glVertex3d(1,-0.75,0);       // BOTTOM LEFT
+        gl.glVertex3d(2.15,-2.15,0);    // BOTTOM RIGHT
+        gl.glEnd();                                 // THEN THEY ALL CONNECT
+
+
     }
 
     @Override
-    public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+        GLU glu = new GLU();
+
+        GL2 gl = drawable.getGL().getGL2();
+        if(height <= 0)
+            height = 1;
+
+        final float h = (float) width / (float) height;
+        gl.glViewport(0, 0, width, height);
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glLoadIdentity();
+
+        glu.gluPerspective(45.0f, h, 1.0, 20.0);
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glLoadIdentity();
 
     }
 
     public static void main(String[] args){
-        GLAutoDrawable drawable = null;
         // getting the capabilities object of GL2 profile
         final GLProfile profile = GLProfile.get(GLProfile.GL2);
         GLCapabilities capabilities = new GLCapabilities(profile);
+
         // canvas
         final GLCanvas glCanvas = new GLCanvas(capabilities);
         ballGame b = new ballGame();
         glCanvas.addGLEventListener(b);
         glCanvas.setSize(400, 400);
+
         // frame
         final JFrame frame = new JFrame("ShootPts");
 
-//        init(drawable);
         // adding canvas to frame
         frame.getContentPane().add(glCanvas);
 
