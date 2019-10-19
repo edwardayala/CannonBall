@@ -4,8 +4,8 @@ public class Basic {
     // return sign of x
     int sign(double x){return x >=0 ? 1: -1;}
     // angle conversion
-    static double degToRad(double x){return x*Math.PI/180;}
-    static double radToDeg(double x){return x*180/Math.PI;}
+    private static double degToRad(double x){return x*Math.PI/180;}
+    private static double radToDeg(double x){return x*180/Math.PI;}
     // degree trig functions
     static double sind(double x){return Math.sin(degToRad(x));}
     static double cosd(double x){return Math.cos(degToRad(x));}

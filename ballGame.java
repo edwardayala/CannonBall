@@ -7,9 +7,12 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.fixedfunc.GLLightingFunc;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
+import javafx.stage.StageStyle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.nio.FloatBuffer;
 //import java.util.LinkedList;
 
@@ -17,18 +20,12 @@ import static com.jogamp.opengl.GL.*;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.*;
 
 
-public class ballGame implements GLEventListener {
-    // all variables initialized to 1.0, meaning
-    // the triangle will initially be white
-//    float red=1.0f, blue=1.0f, green=1.0f;
-
-
+public class ballGame implements GLEventListener, KeyListener {
     // create a linked-list
-    // ... no
 //    LinkedList<Ball> Node = new LinkedList<>();
 
     // a singular target
-//    Target target;
+    private Target target;
 
     // cannon position
     private Vector3d cannon;
@@ -46,7 +43,7 @@ public class ballGame implements GLEventListener {
     private double [] bbx = new double[]{-20,20,-4,20,-100,100};
 
     private ballGame() {
-//        target = new Target();
+        target = new Target();
         // A singular ball
 //        Ball ball = new Ball();
         cannon = new Vector3d();
@@ -129,53 +126,51 @@ public class ballGame implements GLEventListener {
         gl.glNormal3d(0,-1,0);
         gl.glColor3d(0.0,0.0,1.0);
         gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex3d(2.2,2.15,0);     // TOP RIGHT
-        gl.glVertex3d(1,0.75,0);        // TOP LEFT
-        gl.glVertex3d(1,-0.75,0);       // BOTTOM LEFT
-        gl.glVertex3d(2.2,-.95,0);    // BOTTOM RIGHT
-        gl.glEnd();                                 // THEN THEY ALL CONNECT
+        gl.glVertex3d(bbx[1],bbx[2],bbx[4]);      // TOP RIGHT
+        gl.glVertex3d(bbx[1],bbx[3],bbx[4]);      // TOP LEFT
+        gl.glVertex3d(bbx[1],bbx[3],bbx[5]);      // BOTTOM LEFT
+        gl.glVertex3d(bbx[1],bbx[2],bbx[5]);      // BOTTOM RIGHT
+        gl.glEnd();                               // THEN THEY ALL CONNECT
 
         // LEFT WALL
         gl.glNormal3d(0,-1,0);
         gl.glColor3d(1.0,0.0,0.0);
         gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex3d(-1,0.75,0);       // TOP RIGHT
-        gl.glVertex3d(-2.2,2.15,0);    // TOP LEFT
-        gl.glVertex3d(-2.2,-.95,0);    // BOTTOM LEFT
-        gl.glVertex3d(-1,-0.75,0);      // BOTTOM RIGHT
-        gl.glEnd();                                 // THEN THEY ALL CONNECT
+        gl.glVertex3d(bbx[0],bbx[2],bbx[4]);      // TOP RIGHT
+        gl.glVertex3d(bbx[0],bbx[3],bbx[4]);      // TOP LEFT
+        gl.glVertex3d(bbx[0],bbx[3],bbx[5]);      // BOTTOM LEFT
+        gl.glVertex3d(bbx[0],bbx[2],bbx[5]);      // BOTTOM RIGHT
+        gl.glEnd();                               // THEN THEY ALL CONNECT
 
         // TOP WALL
         gl.glNormal3d(0,-1,0);
         gl.glColor3d(0.0,0.8,0.2);
         gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex3d(2.2,2.15,0);     // TOP RIGHT
-        gl.glVertex3d(-2.2,2.15,0);    // TOP LEFT
-        gl.glVertex3d(-1,0.75,0);       // BOTTOM LEFT
-        gl.glVertex3d(1,0.75,0);        // BOTTOM RIGHT
-        gl.glEnd();                                 // THEN THEY ALL CONNECT
+        gl.glVertex3d(bbx[0],bbx[3],bbx[4]);       // TOP RIGHT
+        gl.glVertex3d(bbx[0],bbx[3],bbx[5]);       // TOP LEFT
+        gl.glVertex3d(bbx[1],bbx[3],bbx[5]);       // BOTTOM LEFT
+        gl.glVertex3d(bbx[1],bbx[3],bbx[4]);       // BOTTOM RIGHT
+        gl.glEnd();                                // THEN THEY ALL CONNECT
 
         // BACK WALL
         gl.glNormal3d(0,-1,0);
         gl.glColor3d(0.0,0.8,0.8);
         gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex3d(1,0.75,0);        // TOP RIGHT
-        gl.glVertex3d(-1,0.75,0);       // TOP LEFT
-        gl.glVertex3d(-1,-0.75,0);      // BOTTOM LEFT
-        gl.glVertex3d(1,-0.75,0);       // BOTTOM RIGHT
-        gl.glEnd();                                 // THEN THEY ALL CONNECT
+        gl.glVertex3d(bbx[0],bbx[2],bbx[4]);       // TOP RIGHT
+        gl.glVertex3d(bbx[0],bbx[3],bbx[4]);       // TOP LEFT
+        gl.glVertex3d(bbx[1],bbx[3],bbx[4]);       // BOTTOM LEFT
+        gl.glVertex3d(bbx[1],bbx[2],bbx[4]);       // BOTTOM RIGHT
+        gl.glEnd();                                // THEN THEY ALL CONNECT
 
         // BOTTOM
         gl.glNormal3d(0,-1,0);
-        gl.glColor3d(1,1,1);
-        gl.glBegin(GL2.GL_POLYGON);
-        gl.glVertex3d(-1,-0.75,-0.1);   // VECTOR 1
-        gl.glVertex3d(1,-0.75,-0.1);    // VECTOR 2
-        gl.glVertex3d(2.3,-0.95,-0.1);  // VECTOR 3
-        gl.glVertex3d(2.3,-2.3,-0.1);   // VECTOR 4
-        gl.glVertex3d(-2.3,-2.3,-0.1);  // VECTOR 5
-        gl.glVertex3d(-2.3,-0.95,-0.1); // VECTOR 6
-        gl.glEnd();
+        gl.glColor3d(0.8,0.8,0.8);
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex3d(bbx[0],bbx[2],bbx[4]);       // TOP RIGHT
+        gl.glVertex3d(bbx[0],bbx[2],bbx[5]);       // TOP LEFT
+        gl.glVertex3d(bbx[1],bbx[2],bbx[5]);       // BOTTOM LEFT
+        gl.glVertex3d(bbx[1],bbx[2],bbx[4]);       // BOTTOM RIGHT
+        gl.glEnd();                                // THEN THEY ALL CONNECT
     }
 
     void getCannonEndPts(double ang1, double cX, double cY){
@@ -304,24 +299,24 @@ public class ballGame implements GLEventListener {
 
         // draw the ball(s)
 //        drawAllBalls(drawable);
-//        target.draw(drawable);
+        target.draw(drawable);
 
         // draw the cannon
-//        double cX = 0.0, cY = 0.0, cZ = 0.0;
-//        getCannonEndPts3D(angle1, angle2, cX,cY,cZ);
-//        gl.glColor3f(0,0,1);
-//        gl.glLineWidth(2);
-//        gl.glBegin(GL_LINES);
-//        gl.glVertex3d(cannon.getX(), cannon.getY(), cannon.getZ());
-//        gl.glVertex3d(cX, cY, cZ);
-//        gl.glEnd();
-//
-        // Not real cannon but it looks real so whatever
-        gl.glColor3d(0,0,1);
-        gl.glBegin(GL_LINES);
-        gl.glVertex3d(0,-2,0);
-        gl.glVertex3d(0.12,-1.8,0);
+        double cX = 0.0, cY = 0.0, cZ = 0.0;
+        getCannonEndPts3D(angle1, angle2, cX,cY,cZ);
+        gl.glColor3f(0,0,1);
+        gl.glLineWidth(2);
+        gl.glBegin(GL2.GL_LINES);
+        gl.glVertex3d(cannon.getX(), cannon.getY(), cannon.getZ());
+        gl.glVertex3d(cX, cY, cZ);
         gl.glEnd();
+
+        // Not real cannon but it looks real so whatever
+//        gl.glColor3d(0,0,1);
+//        gl.glBegin(GL_LINES);
+//        gl.glVertex3d(0,-2,0);
+//        gl.glVertex3d(0.12,-1.8,0);
+//        gl.glEnd();
 
 //        draw the ball(s)
 //        drawAllBalls(drawable);
@@ -333,7 +328,7 @@ public class ballGame implements GLEventListener {
 //        glutSwapBuffers();
     }
 
-    void processNormalKeys(char key, int x, int y){
+    void processNormalKeys(char key){
         double maxCannonL = 1.5;
         if (key == 27 || key == 'q')
             java.lang.System.exit(0);
@@ -376,7 +371,7 @@ public class ballGame implements GLEventListener {
         }
     }
 
-    void processSpecialKeys(int key, int x, int y){
+    void processSpecialKeys(int key){
         switch(key) {
             case GLUT_KEY_UP :
                 angle1 += 1;
@@ -416,6 +411,7 @@ public class ballGame implements GLEventListener {
         final GLCanvas glCanvas = new GLCanvas(capabilities);
         ballGame b = new ballGame();
         glCanvas.addGLEventListener(b);
+        glCanvas.addKeyListener(b);
         glCanvas.setSize(400, 400);
 
         // frame
@@ -428,6 +424,22 @@ public class ballGame implements GLEventListener {
 
         frame.setSize(frame.getContentPane().getPreferredSize());
         frame.setVisible(true);
-        frame.setBackground(Color.white);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        System.out.println("Key Pressed: " + e.getKeyChar());
+        processSpecialKeys(e.getKeyChar());
+        processNormalKeys(e.getKeyChar());
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }

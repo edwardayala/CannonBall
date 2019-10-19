@@ -4,12 +4,12 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class Target {
     // Properties / Attributes
-    Vector3d center;
-    Vector3d color;
-    double [] bbx;
-    double innerRadius, outerRadius;
-    boolean isMoving;
-    double deltaX;
+    private Vector3d center = new Vector3d();
+    private Vector3d color = new Vector3d();
+    private double [] bbx;
+    private double innerRadius, outerRadius;
+    private boolean isMoving;
+    private double deltaX;
 
     // Constructor
     Target(){
@@ -66,7 +66,7 @@ public class Target {
         gl.glColor3d(color.getX(),color.getY(),color.getZ());
         gl.glPushMatrix();
         gl.glTranslated(center.m_v[0],center.m_v[1],center.m_v[2]);
-        glut.glutSolidTorus(innerRadius, outerRadius, 20, 20);
+        glut.glutSolidTorus(innerRadius, outerRadius, 30, 30);
         gl.glPopMatrix();
     }
     void setBbx(double [] _bbx){
