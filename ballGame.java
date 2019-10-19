@@ -9,8 +9,9 @@ import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
 
 import javax.swing.*;
+import java.awt.*;
 import java.nio.FloatBuffer;
-import java.util.LinkedList;
+//import java.util.LinkedList;
 
 import static com.jogamp.opengl.GL.*;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.*;
@@ -19,56 +20,42 @@ import static com.jogamp.opengl.fixedfunc.GLLightingFunc.*;
 public class ballGame implements GLEventListener {
     // all variables initialized to 1.0, meaning
     // the triangle will initially be white
-    float red=1.0f, blue=1.0f, green=1.0f;
+//    float red=1.0f, blue=1.0f, green=1.0f;
 
-    // time step
-    double dt = 0.02;
-
-    //yPlane
-    float yPlane = -4;
 
     // create a linked-list
     // ... no
-    LinkedList<Ball> Node = new LinkedList<>();
-
-    // A singular ball
-    Ball ball;
+//    LinkedList<Ball> Node = new LinkedList<>();
 
     // a singular target
-    Target target;
+//    Target target;
 
     // cannon position
-    Vector3d cannon;
+    private Vector3d cannon;
 
     // ball radius
-    double curRadius = 0.6;
-    double minRadius = 0.2;
-    double maxRadius = 1.4;
-
-    // maximum acceleration
-    double maxAccel = 850;
+    private double curRadius = 0.6;
 
     // cannon length
-    double cannonL = 0.5;
-    double maxCannonL = 1.5;
-    double minCannonL = 0.25;
+    private double cannonL = 0.5;
 
     // angle1 for rotating cannon
-    float angle1 = 45.0f;
-    float angle2 = 165.0f;
+    private float angle1 = 45.0f;
+    private float angle2 = 165.0f;
 
-    double [] bbx = new double[]{-20,20,-4,20,-100,100};
+    private double [] bbx = new double[]{-20,20,-4,20,-100,100};
 
-    public ballGame() {
+    private ballGame() {
 //        target = new Target();
-        ball = new Ball();
+        // A singular ball
+//        Ball ball = new Ball();
         cannon = new Vector3d();
     }
 
-    protected static final int GLUT_KEY_LEFT = 0;
-    protected static final int GLUT_KEY_UP = 1;
-    protected static final int GLUT_KEY_RIGHT = 2;
-    protected static final int GLUT_KEY_DOWN = 3;
+    private static final int GLUT_KEY_LEFT = 0;
+    private static final int GLUT_KEY_UP = 1;
+    private static final int GLUT_KEY_RIGHT = 2;
+    private static final int GLUT_KEY_DOWN = 3;
 
     public void init(GLAutoDrawable drawable){
         final GL2 gl = drawable.getGL().getGL2();
@@ -102,7 +89,7 @@ public class ballGame implements GLEventListener {
 
     }
 
-    void changeSize(int w, int h, GLAutoDrawable drawable){
+    private void changeSize(int w, int h, GLAutoDrawable drawable){
         final GL2 gl = drawable.getGL().getGL2();
         final GLU glu = new GLU();
 
@@ -125,67 +112,69 @@ public class ballGame implements GLEventListener {
         // set correct perspective
         glu.gluPerspective(45.0f,ratio,0.1f,1000.0f);
 
-        // get back to the modelview
+        // get back to the model view
         gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
     }
 
-    void drawBBX(GLAutoDrawable drawable){
+    private void drawScene(GLAutoDrawable drawable){
         final GL2 gl = drawable.getGL().getGL2();
+        gl.glTranslatef(0f, 0f, -2.5f);
 
-        gl.glShadeModel(GL_SMOOTH);
-        gl.glNormal3d(1,0,0);
-        gl.glColor3f(1,0,0);
-        gl.glBegin(GL2.GL_QUADS); //front side
-        gl.glVertex3d(bbx[0],bbx[2],bbx[4]);
-        gl.glVertex3d(bbx[0],bbx[3],bbx[4]);
-        gl.glVertex3d(bbx[0],bbx[3],bbx[5]);
-        gl.glVertex3d(bbx[0],bbx[2],bbx[5]);
-        gl.glEnd();
+        // enable lighting
+        gl.glEnable(GL_LIGHTING);
+        gl.glEnable(GL_LIGHT0);
+        gl.glEnable(GL_COLOR_MATERIAL);
 
-        gl.glNormal3d(-1,0,0);
-        gl.glColor3f(0,0,1);
-        gl.glBegin(GL2.GL_QUADS); //front side
-        gl.glVertex3d(bbx[1],bbx[2],bbx[4]);
-        gl.glVertex3d(bbx[1],bbx[3],bbx[4]);
-        gl.glVertex3d(bbx[1],bbx[3],bbx[5]);
-        gl.glVertex3d(bbx[1],bbx[2],bbx[5]);
-        gl.glEnd();
-
-        gl.glNormal3d(0,1,0);
-        gl.glColor3f(0.8f,0.8f,0.8f);
-        gl.glBegin(GL2.GL_QUADS); //front side
-        gl.glVertex3d(bbx[0],bbx[2],bbx[4]);
-        gl.glVertex3d(bbx[0],bbx[2],bbx[5]);
-        gl.glVertex3d(bbx[1],bbx[2],bbx[5]);
-        gl.glVertex3d(bbx[1],bbx[2],bbx[4]);
-        gl.glEnd();
-
+        // RIGHT WALL
         gl.glNormal3d(0,-1,0);
-        gl.glColor3f(0.0f,0.8f,0.2f);
-        gl.glBegin(GL2.GL_QUADS); //front side
-        gl.glVertex3d(bbx[0],bbx[3],bbx[4]);
-        gl.glVertex3d(bbx[0],bbx[3],bbx[5]);
-        gl.glVertex3d(bbx[1],bbx[3],bbx[5]);
-        gl.glVertex3d(bbx[1],bbx[3],bbx[4]);
-        gl.glEnd();
+        gl.glColor3d(0.0,0.0,1.0);
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex3d(2.2,2.15,0);     // TOP RIGHT
+        gl.glVertex3d(1,0.75,0);        // TOP LEFT
+        gl.glVertex3d(1,-0.75,0);       // BOTTOM LEFT
+        gl.glVertex3d(2.2,-.95,0);    // BOTTOM RIGHT
+        gl.glEnd();                                 // THEN THEY ALL CONNECT
 
-        //back
-        gl.glNormal3d(0,0,-1);
-        gl.glColor3f(0.0f,0.8f,0.8f);
-        gl.glBegin(GL2.GL_QUADS); //front side
-        gl.glVertex3d(bbx[0],bbx[2],bbx[4]);
-        gl.glVertex3d(bbx[0],bbx[3],bbx[4]);
-        gl.glVertex3d(bbx[1],bbx[3],bbx[4]);
-        gl.glVertex3d(bbx[1],bbx[2],bbx[4]);
-        gl.glEnd();
-        //front
-        gl.glNormal3d(0,0,1);
-        gl.glColor3f(0.0f,0.8f,0.8f);
-        gl.glBegin(GL2.GL_QUADS); //front side
-        gl.glVertex3d(bbx[0],bbx[2],bbx[5]);
-        gl.glVertex3d(bbx[0],bbx[3],bbx[5]);
-        gl.glVertex3d(bbx[1],bbx[3],bbx[5]);
-        gl.glVertex3d(bbx[1],bbx[2],bbx[5]);
+        // LEFT WALL
+        gl.glNormal3d(0,-1,0);
+        gl.glColor3d(1.0,0.0,0.0);
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex3d(-1,0.75,0);       // TOP RIGHT
+        gl.glVertex3d(-2.2,2.15,0);    // TOP LEFT
+        gl.glVertex3d(-2.2,-.95,0);    // BOTTOM LEFT
+        gl.glVertex3d(-1,-0.75,0);      // BOTTOM RIGHT
+        gl.glEnd();                                 // THEN THEY ALL CONNECT
+
+        // TOP WALL
+        gl.glNormal3d(0,-1,0);
+        gl.glColor3d(0.0,0.8,0.2);
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex3d(2.2,2.15,0);     // TOP RIGHT
+        gl.glVertex3d(-2.2,2.15,0);    // TOP LEFT
+        gl.glVertex3d(-1,0.75,0);       // BOTTOM LEFT
+        gl.glVertex3d(1,0.75,0);        // BOTTOM RIGHT
+        gl.glEnd();                                 // THEN THEY ALL CONNECT
+
+        // BACK WALL
+        gl.glNormal3d(0,-1,0);
+        gl.glColor3d(0.0,0.8,0.8);
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex3d(1,0.75,0);        // TOP RIGHT
+        gl.glVertex3d(-1,0.75,0);       // TOP LEFT
+        gl.glVertex3d(-1,-0.75,0);      // BOTTOM LEFT
+        gl.glVertex3d(1,-0.75,0);       // BOTTOM RIGHT
+        gl.glEnd();                                 // THEN THEY ALL CONNECT
+
+        // BOTTOM
+        gl.glNormal3d(0,-1,0);
+        gl.glColor3d(1,1,1);
+        gl.glBegin(GL2.GL_POLYGON);
+        gl.glVertex3d(-1,-0.75,-0.1);
+        gl.glVertex3d(1,-0.75,-0.1);
+        gl.glVertex3d(2.3,-0.95,-0.1);
+        gl.glVertex3d(2.3,-2.3,-0.1);
+        gl.glVertex3d(-2.3,-2.3,-0.1);
+        gl.glVertex3d(-2.3,-0.95,-0.1);
         gl.glEnd();
     }
 
@@ -194,7 +183,7 @@ public class ballGame implements GLEventListener {
         cY = cannon.getY()+cannonL * Basic.sind(ang1);
     }
 
-    void getCannonEndPts3D(double ang1, double ang2, double cX, double cY, double cZ){
+    private void getCannonEndPts3D(double ang1, double ang2, double cX, double cY, double cZ){
         cY = cannon.getY()+ (cannonL * Basic.sind(ang1));
         double l2 = cannonL * Basic.cosd(ang1);
         cX = cannon.getX()+ (cannonL * Basic.sind(ang2));
@@ -229,12 +218,14 @@ public class ballGame implements GLEventListener {
         int i = 0;
 
         while (tmp != null){
+            // time step
+            double dt = 0.02;
             tmp.ball.update(dt);
             tmp.ball = tmp.Node.get(i+1);
         }
     }
 
-    void addBall(double _r, Vector3d stPt, Vector3d vel, Vector3d accelVec){
+    private void addBall(double _r, Vector3d stPt, Vector3d vel, Vector3d accelVec){
         Node newBall = new Node();
         newBall.ball.setValues(curRadius,stPt,vel,accelVec,bbx);
         newBall.ball.setRandomColor();
@@ -242,7 +233,7 @@ public class ballGame implements GLEventListener {
 //        head = newBall;
     }
 
-    void removeAllNonMoving(){
+    private void removeAllNonMoving(){
         Node predLoc = null;
         Node location = new Node(); // Node location = head;
         boolean isLast = false;
@@ -274,7 +265,7 @@ public class ballGame implements GLEventListener {
         System.out.println("numBallsRemaining: " + numBallsRemaining + " numBallsRemoved: " + numRemoved);
     }
 
-    void renderScene(GLAutoDrawable drawable){
+    private void renderScene(GLAutoDrawable drawable){
         final GL2 gl = drawable.getGL().getGL2();
         final GLU glu = new GLU();
 //        final GLUT glut = new GLUT();
@@ -289,7 +280,7 @@ public class ballGame implements GLEventListener {
         gl.glLoadIdentity();
 
         // set the camera
-        glu.gluLookAt(0.0f, 0.0f, 10.0f,
+        glu.gluLookAt(0.0f, 0.0f, 2.5f,
                      0.0f, 0.0f,  0.0f,
                      0.0f, 1.0f,  0.0f);
 
@@ -299,28 +290,42 @@ public class ballGame implements GLEventListener {
         gl.glEnable(GL_COLOR_MATERIAL);
 
         // draw bbx
-        drawBBX(drawable);
+        drawScene(drawable);
 
         // draw yPlane
         gl.glLineWidth(2);
+        gl.glColor3f(0,1f,1f);
+
         gl.glBegin(GL_LINES);
-        gl.glVertex3f(-4.0f,yPlane,0.0f);
-        gl.glVertex3f(4.0f,yPlane,0.0f);
+        float yPlane = -2;
+        gl.glVertex3f(-4.0f, yPlane,0.0f);
+        gl.glVertex3f(4.0f, yPlane,0.0f);
+        gl.glEnd();
+
+        // draw the ball(s)
+//        drawAllBalls(drawable);
+//        target.draw(drawable);
+
+        // draw the cannon
+//        double cX = 0.0, cY = 0.0, cZ = 0.0;
+//        getCannonEndPts3D(angle1, angle2, cX,cY,cZ);
+//        gl.glColor3f(0,0,1);
+//        gl.glLineWidth(2);
+//        gl.glBegin(GL_LINES);
+//        gl.glVertex3d(cannon.getX(), cannon.getY(), cannon.getZ());
+//        gl.glVertex3d(cX, cY, cZ);
+//        gl.glEnd();
+//
+        // Not real cannon but it looks real so whatever
+        gl.glColor3d(0,0,1);
+        gl.glBegin(GL_LINES);
+        gl.glVertex3d(0,-2,0);
+        gl.glVertex3d(0.12,-1.8,0);
         gl.glEnd();
 
 //        draw the ball(s)
 //        drawAllBalls(drawable);
 //        target.draw(drawable);
-
-        // draw the cannon
-        double cX = 0.0, cY = 0.0, cZ = 0.0;
-        getCannonEndPts3D(angle1, angle2, cX,cY,cZ);
-        gl.glColor3f(0,0,1);
-        gl.glLineWidth(2);
-        gl.glBegin(GL_LINES);
-        gl.glVertex3d(cannon.getX(), cannon.getY(), cannon.getZ());
-        gl.glVertex3d(cX, cY, cZ);
-        gl.glEnd();
 
 //        updateAllBalls();
 //        target.update(Node.getFirst());
@@ -329,12 +334,15 @@ public class ballGame implements GLEventListener {
     }
 
     void processNormalKeys(char key, int x, int y){
+        double maxCannonL = 1.5;
         if (key == 27 || key == 'q')
             java.lang.System.exit(0);
         else if (key == 's'){
             double cX = 0.0, cY = 0.0, cZ = 0.0;
             getCannonEndPts3D(angle1, angle2, cX, cY, cZ);
-            double accel = maxAccel * (cannonL/maxCannonL);
+            // maximum acceleration
+            double maxAccel = 850;
+            double accel = maxAccel * (cannonL/ maxCannonL);
             Vector3d stPt = new Vector3d(cX, cY+curRadius, cZ);
             Vector3d vel = new Vector3d(0,0,0);
             Vector3d accelVec = new Vector3d(cX-cannon.getX(), cY-cannon.getY(),cZ-cannon.getZ());
@@ -348,24 +356,27 @@ public class ballGame implements GLEventListener {
         }
         else if (key=='1'){
             cannonL -= 0.02;
-            if (cannonL<minCannonL)
+            double minCannonL = 0.25;
+            if (cannonL< minCannonL)
                 cannonL = minCannonL;
         }
         else if(key=='2') {
             cannonL += 0.02;
-            if(cannonL>maxCannonL) cannonL = maxCannonL;
+            if(cannonL> maxCannonL) cannonL = maxCannonL;
         }
         else if(key=='9') {
             curRadius -= 0.2;
-            if(curRadius<minRadius) curRadius = minRadius;
+            double minRadius = 0.2;
+            if(curRadius< minRadius) curRadius = minRadius;
         }
         else if(key=='0') {
             curRadius += 0.2;
-            if(curRadius>maxRadius) curRadius = maxRadius;
+            double maxRadius = 1.4;
+            if(curRadius> maxRadius) curRadius = maxRadius;
         }
     }
 
-    void processSpecialKeys(int key, int x, int y, GLAutoDrawable drawable){
+    void processSpecialKeys(int key, int x, int y){
         switch(key) {
             case GLUT_KEY_UP :
                 angle1 += 1;
@@ -386,44 +397,14 @@ public class ballGame implements GLEventListener {
     }
 
     public void display(GLAutoDrawable drawable){
-        final GL2 gl = drawable.getGL().getGL2();
-        gl.glTranslatef(0f, 0f, -2.5f);
-
-        // enable lighting
-        gl.glEnable(GL_LIGHTING);
-        gl.glEnable(GL_LIGHT0);
-        gl.glEnable(GL_COLOR_MATERIAL);
-
-        // RIGHT WALL
-        gl.glNormal3d(0,-1,0);
-        gl.glColor3d(1.0,0.0,0.0);
-        gl.glBegin(GL2.GL_QUADS); //front side
-        gl.glVertex3d(2.15,2.15,0);     // TOP RIGHT
-        gl.glVertex3d(1,0.75,0);        // TOP LEFT
-        gl.glVertex3d(1,-0.75,0);       // BOTTOM LEFT
-        gl.glVertex3d(2.15,-2.15,0);    // BOTTOM RIGHT
-        gl.glEnd();                                 // THEN THEY ALL CONNECT
-
-
+        init(drawable);
+        renderScene(drawable);
+//        drawScene(drawable);
     }
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-        GLU glu = new GLU();
-
-        GL2 gl = drawable.getGL().getGL2();
-        if(height <= 0)
-            height = 1;
-
-        final float h = (float) width / (float) height;
-        gl.glViewport(0, 0, width, height);
-        gl.glMatrixMode(GL2.GL_PROJECTION);
-        gl.glLoadIdentity();
-
-        glu.gluPerspective(45.0f, h, 1.0, 20.0);
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadIdentity();
-
+        changeSize(width,height,drawable);
     }
 
     public static void main(String[] args){
@@ -443,8 +424,10 @@ public class ballGame implements GLEventListener {
         // adding canvas to frame
         frame.getContentPane().add(glCanvas);
 
+
+
         frame.setSize(frame.getContentPane().getPreferredSize());
         frame.setVisible(true);
-
+        frame.setBackground(Color.white);
     }
 }
