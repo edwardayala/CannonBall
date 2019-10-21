@@ -93,6 +93,8 @@ Vector3d:
 	return new Vector3d(m_v[0] / _d, m_v[1] / _d, m_v[2] / _d);
 
 	}
+
+
 Basic:
 
     public class Basic {
