@@ -30,6 +30,9 @@ public class ballGame implements GLEventListener, KeyListener {
     // cannon position
     private Vector3d cannon;
 
+    // A singular ball
+    private Ball ball;
+
     // ball radius
     private double curRadius = 0.6;
 
@@ -44,15 +47,14 @@ public class ballGame implements GLEventListener, KeyListener {
 
     private ballGame() {
         target = new Target();
-        // A singular ball
-//        Ball ball = new Ball();
-        cannon = new Vector3d();
+        ball = new Ball();
+        cannon = new Vector3d(0,-1.8,0);
     }
 
-    private static final int GLUT_KEY_LEFT = 0;
-    private static final int GLUT_KEY_UP = 1;
-    private static final int GLUT_KEY_RIGHT = 2;
-    private static final int GLUT_KEY_DOWN = 3;
+    private static final int GLUT_KEY_LEFT = 37;
+    private static final int GLUT_KEY_UP = 38;
+    private static final int GLUT_KEY_RIGHT = 39;
+    private static final int GLUT_KEY_DOWN = 40;
 
     public void init(GLAutoDrawable drawable){
         final GL2 gl = drawable.getGL().getGL2();
@@ -178,11 +180,13 @@ public class ballGame implements GLEventListener, KeyListener {
         cY = cannon.getY()+cannonL * Basic.sind(ang1);
     }
 
-    private void getCannonEndPts3D(double ang1, double ang2, double cX, double cY, double cZ){
+    private double [] getCannonEndPts3D(double ang1, double ang2, double cX, double cY, double cZ){
         cY = cannon.getY()+ (cannonL * Basic.sind(ang1));
         double l2 = cannonL * Basic.cosd(ang1);
         cX = cannon.getX()+ (cannonL * Basic.sind(ang2));
         cZ = cannon.getZ()+ (cannonL * Basic.cosd(ang2));
+        double [] tmp = {cX, cY, cZ};
+        return tmp;
     }
 
     void drawAllBalls(GLAutoDrawable drawable){
@@ -221,11 +225,12 @@ public class ballGame implements GLEventListener, KeyListener {
     }
 
     private void addBall(double _r, Vector3d stPt, Vector3d vel, Vector3d accelVec){
-        Node newBall = new Node();
-        newBall.ball.setValues(curRadius,stPt,vel,accelVec,bbx);
-        newBall.ball.setRandomColor();
+//        Node newBall = new Node();
+//        newBall.ball.setValues(curRadius,stPt,vel,accelVec,bbx);
+//        newBall.ball.setRandomColor();
 //        newBall.next = head;
 //        head = newBall;
+
     }
 
     private void removeAllNonMoving(){
@@ -290,11 +295,10 @@ public class ballGame implements GLEventListener, KeyListener {
         // draw yPlane
         gl.glLineWidth(2);
         gl.glColor3f(0,1f,1f);
-
         gl.glBegin(GL_LINES);
         float yPlane = -2;
-        gl.glVertex3f(-4.0f, yPlane,0.0f);
-        gl.glVertex3f(4.0f, yPlane,0.0f);
+        gl.glVertex3f(-2.1f, yPlane,0.0f);
+        gl.glVertex3f(2.1f, yPlane,0.0f);
         gl.glEnd();
 
         // draw the ball(s)
@@ -302,21 +306,16 @@ public class ballGame implements GLEventListener, KeyListener {
         target.draw(drawable);
 
         // draw the cannon
-        double cX = 0.0, cY = 0.0, cZ = 0.0;
+        double cX = 0.0, cY = -2, cZ = 0.0;
         getCannonEndPts3D(angle1, angle2, cX,cY,cZ);
         gl.glColor3f(0,0,1);
         gl.glLineWidth(2);
         gl.glBegin(GL2.GL_LINES);
-        gl.glVertex3d(cannon.getX(), cannon.getY(), cannon.getZ());
+//        gl.glVertex3d(cannon.getX(), cannon.getY(), cannon.getZ());
+//        gl.glVertex3d(cannon.getX(), cannon.getY(), cannon.getZ());
         gl.glVertex3d(cX, cY, cZ);
+        gl.glVertex3d(getCannonEndPts3D(angle1, angle2, cX, cY, cZ)[0], getCannonEndPts3D(angle1, angle2, cX, cY, cZ)[1], getCannonEndPts3D(angle1, angle2, cX, cY, cZ)[2]);
         gl.glEnd();
-
-        // Not real cannon but it looks real so whatever
-//        gl.glColor3d(0,0,1);
-//        gl.glBegin(GL_LINES);
-//        gl.glVertex3d(0,-2,0);
-//        gl.glVertex3d(0.12,-1.8,0);
-//        gl.glEnd();
 
 //        draw the ball(s)
 //        drawAllBalls(drawable);
@@ -328,7 +327,7 @@ public class ballGame implements GLEventListener, KeyListener {
 //        glutSwapBuffers();
     }
 
-    void processNormalKeys(char key){
+    private void processNormalKeys(char key){
         double maxCannonL = 1.5;
         if (key == 27 || key == 'q')
             java.lang.System.exit(0);
@@ -371,11 +370,12 @@ public class ballGame implements GLEventListener, KeyListener {
         }
     }
 
-    void processSpecialKeys(int key){
+    private void processSpecialKeys(int key){
         switch(key) {
             case GLUT_KEY_UP :
                 angle1 += 1;
                 if(angle1>=100) angle1 = 100;
+                System.out.println("Cannon move");
                 break;
             case GLUT_KEY_DOWN :
                 angle1 -= 1;
@@ -419,9 +419,6 @@ public class ballGame implements GLEventListener, KeyListener {
 
         // adding canvas to frame
         frame.getContentPane().add(glCanvas);
-
-
-
         frame.setSize(frame.getContentPane().getPreferredSize());
         frame.setVisible(true);
     }
@@ -433,8 +430,8 @@ public class ballGame implements GLEventListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("Key Pressed: " + e.getKeyChar());
-        processSpecialKeys(e.getKeyChar());
+        System.out.println("Key Pressed: " + e.getKeyChar() + " - " + e.getKeyCode());
+        processSpecialKeys(e.getKeyCode());
         processNormalKeys(e.getKeyChar());
     }
 
