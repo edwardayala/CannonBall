@@ -1,4 +1,3 @@
-# Cannon Ball - Java - OpenGL
 This is a Java OpenGL project to recreate a C++ cannon ball game in which a ball is shot through a target.
 ![Screenshot](https://raw.githubusercontent.com/edwardayala/OpenGL_Project/master/ScreenShot.png)
 # Files
